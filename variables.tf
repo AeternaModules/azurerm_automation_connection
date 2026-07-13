@@ -19,14 +19,6 @@ EOT
     values                  = map(string)
     description             = optional(string)
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.automation_connections : (
-        length(v.type) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_automation_connection's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -51,5 +43,8 @@ EOT
   #   source:    [from resourcegroups.ValidateName] !matched
   # path: automation_account_name
   #   source:    validate.AutomationAccount: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: type
+  #   condition: length(value) > 0
+  #   message:   must not be empty
 }
 
